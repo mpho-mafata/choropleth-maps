@@ -19,8 +19,33 @@
 </P>
             
 
-let's start!
+Let's start!
 
+## Table of contents
+
+> [Introduction](https://github.com/mpho-mafata/choropleth-maps/tree/main#introduction)
+> 
+>[Choropleth mapping in R](https://github.com/mpho-mafata/choropleth-maps/tree/main#choropleth-mapping-in-r)
+> 
+>> [Connect to postgreSQL and retrieve data](https://github.com/mpho-mafata/choropleth-maps/tree/main#connect-to-postgresql-and-retrieve-data)
+>> 
+>> [Inspect and mutate the data](https://github.com/mpho-mafata/choropleth-maps/tree/main#inspect-and-mutate-the-data)
+>> 
+>> [Plot the chloropleth using ggplot2](https://github.com/mpho-mafata/choropleth-maps/tree/main#plot-the-chloropleth-using-ggplot2)
+>> 
+>> [Convert, save, and open an interactive plot](https://github.com/mpho-mafata/choropleth-maps/tree/main#convert-save-and-open-an-interactive-plot)
+>> 
+> [Choropleth mapping in python](https://github.com/mpho-mafata/choropleth-maps/tree/main#choropleth-mapping-in-python)
+> 
+>> [Connect to postgreSQL and retrieve data](https://github.com/mpho-mafata/choropleth-maps/tree/main#connect-to-postgresql-and-retrieve-data-1)
+>> 
+>> [Inspect and mutate the data](https://github.com/mpho-mafata/choropleth-maps/tree/main#inspect-and-mutate-the-data-1)
+>> 
+>> [Plot the chloropleth using geopandas](https://github.com/mpho-mafata/choropleth-maps/tree/main#plot-the-chloropleth-using-geopandas)
+>> 
+>> [Interactive mapping with Plotly](https://github.com/mpho-mafata/choropleth-maps/tree/main#interactive-mapping-with-plotly)
+
+---
 # Choropleth mapping in R
 Here are the libraries we will need to use.
 ```
@@ -196,10 +221,13 @@ browseURL("choropleth_example_r.svg")
   <figcaption>Choropleth map generated using GGplot2.</figcaption>
 
 # Convert, save, and open an interactive plot
-active_plot = ggplotly(map_data_continuous, tooltip = "all")
-saveWidget(active_plot, "choropleth_example_r.html")
+```
+active_plot = ggplotly(map_data_continuous,
+                tooltip = "all")
+saveWidget(active_plot,
+        "choropleth_example_r.html")
 browseURL("choropleth_example_r.html")
-
+```
 # Choropleth mapping in python
 
 Here are the libraries we will need to use.
