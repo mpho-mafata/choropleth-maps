@@ -8,7 +8,8 @@ import matplotlib.pyplot as plt
 import plotly.express as px # to plot the map
 import pandas as pd # to manipulate data
 import geopandas
-
+from mpl_toolkits.axes_grid1.inset_locator import zoomed_inset_axes # for zoomed-in subplots
+from mpl_toolkits.axes_grid1.inset_locator import mark_inset # for zoomed-in subplots
 
 # Fetch required data
 biblio_data = pd.read_csv("/Users/mphomafata/Documents/GitHub/choropleth-maps/ctry_bins.csv", header=0)
@@ -37,7 +38,7 @@ biblio_map.write_html("/Users/mphomafata/Documents/GitHub/choropleth-maps/chorop
 world = geopandas.read_file("/Users/mphomafata/Documents/GitHub/choropleth-maps/geopanda reference data/ne_110m_admin_0_countries/ne_110m_admin_0_countries.dbf")
 
 # Merge with our data
-mapdata=pd.merge(world, biblio_data, how = "outer", left_on="SOVEREIGNT", right_on='region')
+mapdata = pd.merge(world, biblio_data, how = "outer", left_on="SOVEREIGNT", right_on='region')
 
 # Plot world map
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16,10))
@@ -48,6 +49,7 @@ mapplot = mapdata.plot(column='total_count',
                        ax=ax,
                        legend=True,
                        edgecolor='black',
+                       cmap="tab10", # tab10, tab20, Accent, Dark2, Paired, Pastel1, Set1, Set2
                        linewidth=0.5,
                        missing_kwds={"color": "lightgrey"},
                        legend_kwds={"title": 'Number of publications',
@@ -55,6 +57,28 @@ mapplot = mapdata.plot(column='total_count',
                                     'title_fontsize':12,
                                     'fontsize':10}
                        )
+# Add a EUROPE zoom plot
+axins = zoomed_inset_axes(ax,
+                          zoom=1.75, # size of the zoomed section
+                          bbox_to_anchor=(860,285)
+                          )
+axins.set_xlim(-10,40)
+axins.set_ylim(30,60)
+plt.xticks(visible=False)
+plt.yticks(visible=False)
+mark_inset(ax, axins, loc1=2, loc2=1, fc="none", ec="0.5")
+
+mapdata.plot(column='total_count',
+             scheme='naturalbreaks',
+             k=10,
+             ax = axins,
+             legend=False,
+             edgecolor='black',
+             cmap="tab10",
+             linewidth=0.5,
+             missing_kwds={"color": "lightgrey"}
+             )
+
 # save my map
 plt.savefig(fname = 'choropleth_example_python.svg',dpi = 600,
             bbox_inches="tight", pad_inches=0.0,
