@@ -1,3 +1,7 @@
+## set directory to the desired folder
+import os
+os.chdir("/Users/mphomafata/Documents/GitHub/choropleth-maps")
+
 # Import necessary libraries
 import psycopg # to connect to postgresql
 import matplotlib.pyplot as plt
@@ -5,56 +9,35 @@ import plotly.express as px # to plot the map
 import pandas as pd # to manipulate data
 import geopandas
 
-# get my postgresql credentials
-credentials = pd.read_excel("~/my_credentials.xlsx")
-crest_port = 5432
-db_name = credentials.dbname[0]
-host_name = credentials.host[0]
-user_name = credentials.user_name[0]
-user_password = credentials.user_password[0]
-# connect to postgresql
-connec = psycopg.connect(
-    port=5432,
-    host=host_name,
-    dbname=db_name,
-    user=user_name,
-    password=user_password)
-# Retrieve data tables
-cursor = connec.cursor()
-table1 = 'ctry_bins_maps'
-schema1 = 'my_schema'
-cursor.execute(f'SELECT * from {schema1}.{table1}')
+
 # Fetch required data
-biblio_data = cursor.fetchall()
-# Closing the connection
-connec.close()
+biblio_data = pd.read_csv("/Users/mphomafata/Documents/GitHub/choropleth-maps/ctry_bins.csv", header=0)
 
-# mutate data and add column names
-biblio_data = pd.DataFrame(biblio_data)
-biblio_data.columns = ["country","total_count","tw1", "tw2"]
-# CHANGE COUNTRY NAMES TO MATCH GEOPANDA LIST
-biblio_data['country'] = biblio_data['country'].replace(['USA', 'UK', 'Czech Republic'],
-                                                    ['United States of America', 'United Kingdom', 'Czechia'])
-print(biblio_data) # inspect the data
+# CHANGE COUNTRY NAMES IN OUR DATASET TO MATCH GEOPANDA LIST
+biblio_data['region'] = biblio_data['region'].replace(['USA', 'U Arab Emirates', 'Czech Republic', 'England', 'Wales', 'Scotland', 'North Ireland', 'Peoples R China'], # our data's country names
+                                                    ['United States of America', 'United Arab Emirates', 'Czechia', 'United Kingdom', 'United Kingdom', 'United Kingdom', 'United Kingdom', 'China']) # Geopanda country names
 
+# Now there is inconsistency in the united kingdom data so let's fix that
+biblio_data = biblio_data.groupby("region").aggregate(func="sum").reset_index()
+
+biblio_data.to_excel("biblio.xlsx")
 # plot an interactive map using plotly
 biblio_map = px.choropleth(biblio_data,
                            locationmode = 'country names',
-                           locations="country",
+                           locations="region",
                            scope="world",
-                           hover_name="country",
+                           hover_name="region",
                            color="total_count",
                            color_continuous_scale="Viridis")
 # save my interactive plot
-biblio_map.write_html("~/choropleth_example_python.html")
+biblio_map.write_html("/Users/mphomafata/Documents/GitHub/choropleth-maps/choropleth_example_python.html")
 
 # plot static maps
-world = geopandas.read_file(geopandas.datasets.get_path('naturalearth_lowres'))
-world.columns=['pop_est', 'continent2', 'country', 'Country Code', 'gdp_md_est', 'geometry']
+# read the polygon countries data from the Geopandas reference data
+world = geopandas.read_file("/Users/mphomafata/Documents/GitHub/choropleth-maps/geopanda reference data/ne_110m_admin_0_countries/ne_110m_admin_0_countries.dbf")
 
 # Merge with our data
-mapdata=pd.merge(world,biblio_data, how = "outer", on='country')
-mapdata.to_excel("mapdata.xlsx")
+mapdata=pd.merge(world, biblio_data, how = "outer", left_on="SOVEREIGNT", right_on='region')
 
 # Plot world map
 fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(16,10))
@@ -76,3 +59,4 @@ mapplot = mapdata.plot(column='total_count',
 plt.savefig(fname = 'choropleth_example_python.svg',dpi = 600,
             bbox_inches="tight", pad_inches=0.0,
             transparent=True, format = "svg")
+plt.show()
