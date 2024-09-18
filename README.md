@@ -1,14 +1,16 @@
 # Introduction
 
 <p>
-        Plotting geographical maps turned out to be more difficult than I thought. It always start with data structure issues. 
-        In the case of geographic maps, political changes influence our ability to visualize geographic data.
-        For instance, changes in country names, recognition of territories as independent, and of course designating the borders of disputed teritories.
-        Also, the use of codes for distinguishing countries can be tricky. 
-        For example, the changes and reundancies in country codes (iso_alpha2 and iso_alpha_3) and the name variations of countries.
+        Plotting geographical maps may seem straight-forward but it has political implications and often some data structure issues. 
+        In the case of political implications, some regions may be recognised in some cases and not so in others (i.e., recognition of territories as independent). 
+        For example, the choice of designation of Taiwan under  China, and of course designating the borders (polygons in the map) of disputed teritories.
+        Also, the use of codes for distinguishing countries can be tricky especially when using older data. For example, the united kingdom has reserved both 'UK' and 'GB'.
+        Additionally, the country names may differ according to language, historical reason, or how some regions (or databases) may choose to recognise them. 
+        For example, Côte d'Ivoire cf. Ivory coast. In cases like these the use of dictionaries (and <a href="https://en.wikipedia.org/wiki/List_of_ISO_3166_country_codes">ISO 3166</a>) for translation would be the best friend of the data analyst. 
+        </br>
+        </br>
         First we start by creating simple choropleth maps in R and python.
         Later, we will follow with ideas on how to achieve simple disambiguation of the various names and country codes.
-        For now some definitions . . . 
 </p>
 
 <P>
